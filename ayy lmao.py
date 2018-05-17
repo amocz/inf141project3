@@ -2,11 +2,9 @@
 ## Erin Cheong, Zachary Little, Chris Zhao
 
 import json
-import itertools
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from nltk.tokenize import RegexpTokenizer
-from nltk.stem.snowball import EnglishStemmer
 import lxml
 
 
