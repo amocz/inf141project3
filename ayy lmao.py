@@ -50,7 +50,7 @@ class Milestone_1:
                 '''                
                 for path in self.list_of_keys:
                         self.tokenized_files[path] = self.tokenizer(path)
-                        print("Indexing: ", path)
+                        print("Tokenizing: ", path)
                         ## All the 'u' in front of the path just represents that
                         ##    the output from BeautifulSoup is in Unicode.
                         ##    Nothing bad about this. Don't worry.
