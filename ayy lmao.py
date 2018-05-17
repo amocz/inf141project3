@@ -10,29 +10,13 @@ from nltk.stem.snowball import EnglishStemmer
 import lxml
 
 
-##file_0 = open("bookkeeping.json")
-##json_string = file_0.read()
-##json_d = json.loads(json_string)
-####print(json_dict["1/1"])
-##
-##keys_list = ['1/351', '10/183', '10/316', '13/378', '15/365', '17/28', '17/330',
-##             '19/22', '19/404', '2/46', '20/58', '21/392', '27/284', '27/332', '27/335',
-##             '27/69', '30/151', '32/139', '35/149', '35/334', '35/38', '37/85', '38/381',
-##             '4/191', '41/223', '42/221', '42/371', '43/239', '43/323', '43/436', '45/365',
-##             '46/301', '49/191', '50/451', '51/189', '54/227', '54/264', '56/48', '61/414',
-##             '61/444', '63/295', '63/481', '65/378', '66/141', '68/440', '69/263',
-##             '73/348', '73/462', '74/210', '8/333']
-##
-##for k in keys_list:
-##        for j in json_d:
-##                if k == j:
-##                        print(json_d[j])
-
 class Milestone_1:
 
         def __init__(self):
                 self.file_count = 0
                 self.list_of_keys = []
+                self.word_dict = {}
+                self.tokenized_files = {}
 
         def read_bookkeeping(self):
                 '''reads the bookkeeping.txt and loads it into a dict'''
@@ -43,30 +27,38 @@ class Milestone_1:
                         self.file_count = self.file_count + 1
                         self.list_of_keys.append(j)
 
+        def tokenizer(self, file_path):
+                '''Tokenizes input HTML files and returns a word_dict dictionary
+                with each word as the key and its frequency in which it appears
+                on the HTML webpage as the values
+                '''
+                token = RegexpTokenizer(pattern="\\w+")
+                html_file = open(file_path).read()
+                all_text = BeautifulSoup(html_file, "lxml").get_text()
+        
+                for word in token.tokenize(all_text):
+                        if word.lower() in self.word_dict.keys():
+                                self.word_dict[word.lower()] += 1
+                        else:
+                                self.word_dict[word.lower()] = 1
+                return self.word_dict
 
-##html_parse():
-##    """iterates through every HTML file in every folder in WEBPAGES_RAW folder
-##    and parses it using BeautifulSoup and tokenizing it"""
-##
-##    
-##    for i in range(len(folder)):
-##            for j in range(len(folder_files)):
-##                string_format(directory)
-##                access(directory) -- meaning open("directory") and beautifulsoup iter
+        def tokenize_files(self):
+                '''Goes through and calls each HTML folder/file path with
+                tokenizer() and returns a dict of dicts with the key being
+                the file path and the values are the word_dict dictionary
+                '''                
+                for path in self.list_of_keys:
+                        self.tokenized_files[path] = self.tokenizer(path)
+                        print("Indexing: ", path)
+                        ## All the 'u' in front of the path just represents that
+                        ##    the output from BeautifulSoup is in Unicode.
+                        ##    Nothing bad about this. Don't worry.
+                return self.tokenized_files
 
-
-##with open("//Users//EC//Documents//CS121//Project 3//WEBPAGES_RAW//7//6") as fp:
-##    soup = BeautifulSoup(fp, "lxml")
-
-##soup = BeautifulSoup("<html>data</html>", "lxml")
-
-##html_file = open("//Users//EC//Documents//CS121//Project 3//WEBPAGES_RAW//7//6")   
-##soup = BeautifulSoup(html_file, 'html.parser')
-##print(soup.prettify())
-
-##folder_path = open("//Users//EC//Documents//CS121//Project 3//WEBPAGES_RAW")
 
 if __name__ == "__main__":
         meh = Milestone_1()
         meh.read_bookkeeping()
+        meh.tokenize_files()
 
