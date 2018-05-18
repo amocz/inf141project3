@@ -2,12 +2,12 @@
 ## Erin Cheong, Zachary Little, Chris Zhao
 
 import json
-from bs4 import BeautifulSoup
-from collections import defaultdict
-from nltk.tokenize import RegexpTokenizer
 import lxml
 import build_index
-
+from bs4 import BeautifulSoup
+from collections import defaultdict, Iterable
+from nltk.tokenize import RegexpTokenizer
+from pymongo import MongoClient
 
 class Milestone_1:
 
@@ -46,8 +46,12 @@ class Milestone_1:
                 '''Goes through and calls each HTML folder/file path with
                 tokenizer() and returns a dict of dicts with the key being
                 the file path and the values are the word_dict dictionary
-                '''                
-                for path in self.list_of_keys:
+
+                for path in self.list_of_keys runs through all 37k items and is too large for testing
+
+                for path in self.list_of_keys[:15] will allow me to reduce index size of testing
+                '''
+                for path in self.list_of_keys[:15]:
                         self.tokenized_files[path] = self.tokenizer(path)
                         print("Tokenizing: " + path)
                         #print(self.tokenized_files)
@@ -58,9 +62,42 @@ class Milestone_1:
 
 
 if __name__ == "__main__":
+        try:
+            client = MongoClient()
+            client = MongoClient("mongodb://localhost:27017/")
+            print('Connected to MongoDB successfully!!')
+        except:
+            print('Could not connect to MongoDB')
+
+        my_database = client['inverted_index_storage']
+        my_collection = my_database['inverted_index_table']
+
+        '''
+        The following code can be used to delete all records from a pymongo table in order to restart
+        and avoid duplicate entries
+        
+        my_collection.delete_many({}) or my_collection.remove({})         
+        '''
+
+        '''
+        The following code can be used to check all records in a pymongo table
+
+        cursor = my_collection.find()
+        for record in cursor:
+            print(record)        
+        '''
+
         driver = Milestone_1()
         driver.read_bookkeeping()
-        #print(driver.file_count, driver.list_of_keys)
+        print(driver.file_count, driver.list_of_keys)
 
         dict_of_dicts = driver.tokenize_files()
-        inverted_index = build_index.build_inverted_index(dict_of_dicts)
+        print(dict_of_dicts.items())
+
+        '''
+        The following code can be used to add a record to the pymongo table
+        
+        record = my_database.inverted_index_table.insert(dict_of_dicts)
+        '''
+        index_builder = build_index.IndexBuilder()
+        index_builder.build_inverted_index(dict_of_dicts)

@@ -1,6 +1,7 @@
 from collections import defaultdict
 
-class index_builder:
+
+class IndexBuilder:
 
     def __init__(self):
         self.inverted_index = {}
