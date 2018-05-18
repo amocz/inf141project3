@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from collections import defaultdict
 from nltk.tokenize import RegexpTokenizer
 import lxml
+import build_index
 
 
 class Milestone_1:
@@ -49,6 +50,7 @@ class Milestone_1:
                 for path in self.list_of_keys:
                         self.tokenized_files[path] = self.tokenizer(path)
                         print("Tokenizing: " + path)
+                        #print(self.tokenized_files)
                         ## All the 'u' in front of the path just represents that
                         ##    the output from BeautifulSoup is in Unicode.
                         ##    Nothing bad about this. Don't worry.
@@ -56,6 +58,9 @@ class Milestone_1:
 
 
 if __name__ == "__main__":
-        meh = Milestone_1()
-        meh.read_bookkeeping()
-        meh.tokenize_files()
+        driver = Milestone_1()
+        driver.read_bookkeeping()
+        #print(driver.file_count, driver.list_of_keys)
+
+        dict_of_dicts = driver.tokenize_files()
+        inverted_index = build_index.build_inverted_index(dict_of_dicts)
