@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
         driver = Milestone_1()
         driver.read_bookkeeping()
-        #print(driver.file_count, driver.list_of_keys)
+        print("Total file count: " + str(driver.file_count))
 
         dict_of_dicts = driver.tokenize_files()
 
@@ -107,7 +107,7 @@ if __name__ == "__main__":
                     dict_of_token_frequency[word] = {url:dict_of_dicts[url][word]}
                 else:
                     dict_of_token_frequency[word].update({url:dict_of_dicts[url][word]})
-        print(dict_of_token_frequency)
+        #print(dict_of_token_frequency)
 
         '''
         The following code can be used to add a record to the pymongo table
