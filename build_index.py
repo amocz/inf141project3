@@ -1,6 +1,7 @@
 from collections import defaultdict
 from collections import Counter
 
+#def count_
 
 class IndexBuilder:
 
@@ -13,7 +14,7 @@ class IndexBuilder:
         calculate tf for all tokens
         Counter is basically a subclass of dict. We can still do everything we'd normally do with dict.
         '''
-        tf = Counter({})
-        for i in dict_of_wordcount_dict:
-                tf = tf + Counter(dict_of_wordcount_dict[i])
-        print(tf.items())
+        # tf = Counter({})
+        # for i in dict_of_wordcount_dict:
+        #         tf = tf + Counter(dict_of_wordcount_dict[i])
+        # print(tf.items())

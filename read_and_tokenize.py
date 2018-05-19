@@ -16,6 +16,8 @@ class Milestone_1:
                 self.list_of_keys = []
                 self.word_dict = {}
                 self.tokenized_files = {}
+                self._token_in_doc_count = 0
+                self._dict_of_token_frequency = {}
 
         def read_bookkeeping(self):
                 '''reads the bookkeeping.txt and loads it into a dict'''
@@ -40,6 +42,20 @@ class Milestone_1:
                                 self.word_dict[word.lower()] += 1
                         else:
                                 self.word_dict[word.lower()] = 1
+
+                _total_words_in_document = sum(self.word_dict.values())
+                print("total words in document: ",_total_words_in_document)
+
+                for token, count in self.word_dict.items():
+                    self._token_in_doc_count = count
+                    _term_frequency = float( float(self._token_in_doc_count) / _total_words_in_document )
+
+                    if token in self._dict_of_token_frequency.keys():
+                        self._dict_of_token_frequency[token] += _term_frequency
+                    else:
+                        self._dict_of_token_frequency[token] = _term_frequency
+
+                print(self._dict_of_token_frequency.items())
                 return self.word_dict
 
         def tokenize_files(self):
@@ -52,8 +68,9 @@ class Milestone_1:
                 for path in self.list_of_keys[:15] will allow me to reduce index size of testing
                 '''
                 for path in self.list_of_keys[:15]:
-                        self.tokenized_files[path] = self.tokenizer(path)
                         print("Tokenizing: " + path)
+                        self.tokenized_files[path] = self.tokenizer(path)
+                        #print(self.word_dict.items())
                         #print(self.tokenized_files)
                         ## All the 'u' in front of the path just represents that
                         ##    the output from BeautifulSoup is in Unicode.
@@ -89,10 +106,11 @@ if __name__ == "__main__":
 
         driver = Milestone_1()
         driver.read_bookkeeping()
-        print(driver.file_count, driver.list_of_keys)
 
         dict_of_dicts = driver.tokenize_files()
         print(dict_of_dicts.items())
+
+        print(driver.inverted_index)
 
 
 
@@ -101,5 +119,5 @@ if __name__ == "__main__":
         
         record = my_database.inverted_index_table.insert(dict_of_dicts)
         '''
-        index_builder = build_index.IndexBuilder()
-        index_builder.build_inverted_index(dict_of_dicts)
+        #index_builder = build_index.IndexBuilder()
+        #index_builder.build_inverted_index(dict_of_dicts)
