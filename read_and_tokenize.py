@@ -51,7 +51,7 @@ class Milestone_1:
 
                 for path in self.list_of_keys[:15] will allow me to reduce index size of testing
                 '''
-                for path in self.list_of_keys[:1]:
+                for path in self.list_of_keys[:15]:
                         self.tokenized_files[path] = self.tokenizer(path)
                         print("Tokenizing: " + path)
                         #print(self.tokenized_files)
@@ -93,6 +93,8 @@ if __name__ == "__main__":
 
         dict_of_dicts = driver.tokenize_files()
         print(dict_of_dicts.items())
+
+
 
         '''
         The following code can be used to add a record to the pymongo table
