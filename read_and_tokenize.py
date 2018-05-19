@@ -33,7 +33,7 @@ class Milestone_1:
                 '''
                 token = RegexpTokenizer(pattern="\\w+")
                 html_file = open(file_path).read()
-                all_text = BeautifulSoup(html_file, "lxml").get_text()
+                all_text = BeautifulSoup(html_file, "lxml").get_text().encode("utf-8")
         
                 for word in token.tokenize(all_text):
                         if word.lower() in self.word_dict.keys():
@@ -51,7 +51,7 @@ class Milestone_1:
 
                 for path in self.list_of_keys[:15] will allow me to reduce index size of testing
                 '''
-                for path in self.list_of_keys[:15]:
+                for path in self.list_of_keys[:1]:
                         self.tokenized_files[path] = self.tokenizer(path)
                         print("Tokenizing: " + path)
                         #print(self.tokenized_files)
