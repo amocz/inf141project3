@@ -8,12 +8,21 @@ class IndexBuilder:
     def __init__(self):
         self.inverted_index = {}
 
-    def build_inverted_index(self, dict_of_wordcount_dict):
+    def build_inverted_index(self, dict_of_token_frequency, number_of_documents):
         print('called build_inverted_index')
         '''
         calculate tf for all tokens
         Counter is basically a subclass of dict. We can still do everything we'd normally do with dict.
         '''
+        for token, file_and_tf_dict in dict_of_token_frequency.items():
+            _documents_with_token = len(file_and_tf_dict.keys())
+            _inverse_document_frequency =  float(number_of_documents) / _documents_with_token
+            for url, _token_frequency in file_and_tf_dict.items():
+                _tf_idf = _token_frequency * _inverse_document_frequency
+                file_and_tf_dict[url] = _tf_idf
+
+        print(dict_of_token_frequency.items())
+
         # tf = Counter({})
         # for i in dict_of_wordcount_dict:
         #         tf = tf + Counter(dict_of_wordcount_dict[i])

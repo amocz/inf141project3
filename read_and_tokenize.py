@@ -7,7 +7,9 @@ import build_index
 from bs4 import BeautifulSoup
 from collections import defaultdict, Iterable
 from nltk.tokenize import RegexpTokenizer
-from pymongo import MongoClient
+#from pymongo import MongoClient
+
+file_limit = 15
 
 class Milestone_1:
 
@@ -16,8 +18,6 @@ class Milestone_1:
                 self.list_of_keys = []
                 self.word_dict = {}
                 self.tokenized_files = {}
-                self._token_in_doc_count = 0
-                self._dict_of_token_frequency = {}
 
         def read_bookkeeping(self):
                 '''reads the bookkeeping.txt and loads it into a dict'''
@@ -36,27 +36,14 @@ class Milestone_1:
                 token = RegexpTokenizer(pattern="\\w+")
                 html_file = open(file_path).read()
                 all_text = BeautifulSoup(html_file, "lxml").get_text().encode("utf-8")
-        
+
+                _word_dict = {}
                 for word in token.tokenize(all_text):
-                        if word.lower() in self.word_dict.keys():
-                                self.word_dict[word.lower()] += 1
+                        if word.lower() in _word_dict.keys():
+                                _word_dict[word.lower()] += 1
                         else:
-                                self.word_dict[word.lower()] = 1
-
-                _total_words_in_document = sum(self.word_dict.values())
-                print("total words in document: ",_total_words_in_document)
-
-                for token, count in self.word_dict.items():
-                    self._token_in_doc_count = count
-                    _term_frequency = float( float(self._token_in_doc_count) / _total_words_in_document )
-
-                    if token in self._dict_of_token_frequency.keys():
-                        self._dict_of_token_frequency[token] += _term_frequency
-                    else:
-                        self._dict_of_token_frequency[token] = _term_frequency
-
-                print(self._dict_of_token_frequency.items())
-                return self.word_dict
+                                _word_dict[word.lower()] = 1
+                return _word_dict
 
         def tokenize_files(self):
                 '''Goes through and calls each HTML folder/file path with
@@ -67,19 +54,20 @@ class Milestone_1:
 
                 for path in self.list_of_keys[:15] will allow me to reduce index size of testing
                 '''
-                for path in self.list_of_keys[:15]:
-                        print("Tokenizing: " + path)
+                for path in self.list_of_keys[:file_limit]:
                         self.tokenized_files[path] = self.tokenizer(path)
-                        #print(self.word_dict.items())
+                        print("Tokenizing: " + path)
                         #print(self.tokenized_files)
                         ## All the 'u' in front of the path just represents that
                         ##    the output from BeautifulSoup is in Unicode.
                         ##    Nothing bad about this. Don't worry.
+
+
                 return self.tokenized_files
 
 
 if __name__ == "__main__":
-        try:
+        '''try:
             client = MongoClient()
             client = MongoClient("mongodb://localhost:27017/")
             print('Connected to MongoDB successfully!!')
@@ -87,7 +75,7 @@ if __name__ == "__main__":
             print('Could not connect to MongoDB')
 
         my_database = client['inverted_index_storage']
-        my_collection = my_database['inverted_index_table']
+        my_collection = my_database['inverted_index_table']'''
 
         '''
         The following code can be used to delete all records from a pymongo table in order to restart
@@ -106,18 +94,26 @@ if __name__ == "__main__":
 
         driver = Milestone_1()
         driver.read_bookkeeping()
+        #print(driver.file_count, driver.list_of_keys)
 
         dict_of_dicts = driver.tokenize_files()
-        print(dict_of_dicts.items())
 
-        print(driver.inverted_index)
+        #print(dict_of_dicts.values()) # this contain the url as a key and then the word and word count as key value pairs
 
-
+        dict_of_token_frequency = {} # after construction, this contains the word as a key and the url:tf as a kv pair
+        for url in dict_of_dicts:
+            for word in dict_of_dicts[url]:
+                if word not in dict_of_token_frequency:
+                    dict_of_token_frequency[word] = {url:dict_of_dicts[url][word]}
+                else:
+                    dict_of_token_frequency[word].update({url:dict_of_dicts[url][word]})
+        print(dict_of_token_frequency)
 
         '''
         The following code can be used to add a record to the pymongo table
         
         record = my_database.inverted_index_table.insert(dict_of_dicts)
         '''
-        #index_builder = build_index.IndexBuilder()
-        #index_builder.build_inverted_index(dict_of_dicts)
+
+        index_builder = build_index.IndexBuilder()
+        index_builder.build_inverted_index(dict_of_token_frequency, file_limit)
