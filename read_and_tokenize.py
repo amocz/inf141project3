@@ -9,7 +9,7 @@ from collections import defaultdict, Iterable
 from nltk.tokenize import RegexpTokenizer
 #from pymongo import MongoClient
 
-file_limit = 15
+file_limit = 1570
 
 class Milestone_1:
 
@@ -54,9 +54,11 @@ class Milestone_1:
 
                 for path in self.list_of_keys[:15] will allow me to reduce index size of testing
                 '''
-                for path in self.list_of_keys[:file_limit]:
+                count = 0
+                for path in self.list_of_keys:
                         self.tokenized_files[path] = self.tokenizer(path)
-                        print("Tokenizing: " + path)
+                        count += 1
+                        print("Tokenizing: " + path + "\t" + str(count) + "/" + str(driver.file_count))
                         #print(self.tokenized_files)
                         ## All the 'u' in front of the path just represents that
                         ##    the output from BeautifulSoup is in Unicode.
@@ -116,4 +118,4 @@ if __name__ == "__main__":
         '''
 
         index_builder = build_index.IndexBuilder()
-        index_builder.build_inverted_index(dict_of_token_frequency, file_limit)
+        index_builder.build_inverted_index(dict_of_token_frequency, driver.file_count)

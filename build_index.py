@@ -26,7 +26,7 @@ class IndexBuilder:
                 out_file.write(str(token) + str(file_and_tf_dict))
                 out_file.write("\n")
         print('Index wrote to index_file.txt')
-
+        print("Total number of unique token: " + str(len(dict_of_token_frequency)))
         # tf = Counter({})
         # for i in dict_of_wordcount_dict:
         #         tf = tf + Counter(dict_of_wordcount_dict[i])
