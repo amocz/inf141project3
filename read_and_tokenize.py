@@ -26,7 +26,7 @@ class Milestone_1:
                 json_dict = json.loads(json_str)
                 for j in json_dict:
                         self.file_count = self.file_count + 1
-                        self.list_of_keys.append(j)
+                        self.list_of_keys.append(j.encode("utf-8"))
 
         def tokenizer(self, file_path):
                 '''Tokenizes input HTML files and returns a word_dict dictionary
