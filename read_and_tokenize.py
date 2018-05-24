@@ -56,6 +56,8 @@ class Milestone_1:
                 '''
                 count = 0
                 for path in self.list_of_keys:
+                        if path == "39/373" or path =="35/269":
+                                continue
                         self.tokenized_files[path] = self.tokenizer(path)
                         count += 1
                         print("Tokenizing: " + path + "\t" + str(count) + "/" + str(driver.file_count))
@@ -97,7 +99,7 @@ if __name__ == "__main__":
         driver = Milestone_1()
         driver.read_bookkeeping()
         print("Total file count: " + str(driver.file_count))
-
+        print(driver.list_of_keys)
         dict_of_dicts = driver.tokenize_files()
 
         #print(dict_of_dicts.values()) # this contain the url as a key and then the word and word count as key value pairs
