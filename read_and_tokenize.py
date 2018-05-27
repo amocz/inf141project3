@@ -17,7 +17,6 @@ class Milestone_1:
         def __init__(self):
                 self.file_count = 0
                 self.list_of_keys = []
-                self.word_dict = {}
                 self.tokenized_files = {}
 
         def read_bookkeeping(self):
@@ -136,5 +135,8 @@ if __name__ == "__main__":
                 print(record)
                 print("\n")
         '''
-        query = get_input.get_query()
-        print(str(query))
+
+        query = get_input.query()
+        a = query.trim_query()
+        print(a)
+        
