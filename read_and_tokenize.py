@@ -7,9 +7,9 @@ import build_index
 from bs4 import BeautifulSoup
 from collections import defaultdict, Iterable
 from nltk.tokenize import RegexpTokenizer
-#from pymongo import MongoClient
+from pymongo import MongoClient
 
-file_limit = 1570
+file_limit = 5
 
 class Milestone_1:
 
@@ -33,9 +33,18 @@ class Milestone_1:
                 with each word as the key and its frequency in which it appears
                 on the HTML webpage as the values
                 '''
-                token = RegexpTokenizer(pattern="\\w+")
+                token = RegexpTokenizer(pattern=r'[a-zA-Z0-9]+')
                 html_file = open(file_path).read()
-                all_text = BeautifulSoup(html_file, "lxml").get_text().encode("utf-8")
+                all_text = BeautifulSoup(html_file, "lxml")
+                #tag.decompose() for tag in all_text
+                for script in all_text(["script", "style"]):
+                        script.extract()
+                '''
+                for tag in all_text:
+                        for attribute in ["class", "id", "name", "style"]:
+                                del tag[attribute]
+                '''
+                all_text = all_text.get_text().encode("utf-8")
 
                 _word_dict = {}
                 for word in token.tokenize(all_text):
@@ -55,7 +64,7 @@ class Milestone_1:
                 for path in self.list_of_keys[:15] will allow me to reduce index size of testing
                 '''
                 count = 0
-                for path in self.list_of_keys:
+                for path in self.list_of_keys[:file_limit]:
                         if path == "39/373" or path =="35/269":
                                 continue
                         self.tokenized_files[path] = self.tokenizer(path)
@@ -71,7 +80,7 @@ class Milestone_1:
 
 
 if __name__ == "__main__":
-        '''try:
+        try:
             client = MongoClient()
             client = MongoClient("mongodb://localhost:27017/")
             print('Connected to MongoDB successfully!!')
@@ -79,7 +88,7 @@ if __name__ == "__main__":
             print('Could not connect to MongoDB')
 
         my_database = client['inverted_index_storage']
-        my_collection = my_database['inverted_index_table']'''
+        my_collection = my_database['inverted_index_table']
 
         '''
         The following code can be used to delete all records from a pymongo table in order to restart
@@ -99,7 +108,7 @@ if __name__ == "__main__":
         driver = Milestone_1()
         driver.read_bookkeeping()
         print("Total file count: " + str(driver.file_count))
-        print(driver.list_of_keys)
+        #print(driver.list_of_keys)
         dict_of_dicts = driver.tokenize_files()
 
         #print(dict_of_dicts.values()) # this contain the url as a key and then the word and word count as key value pairs
@@ -115,9 +124,19 @@ if __name__ == "__main__":
 
         '''
         The following code can be used to add a record to the pymongo table
-        
-        record = my_database.inverted_index_table.insert(dict_of_dicts)
         '''
 
+
         index_builder = build_index.IndexBuilder()
-        index_builder.build_inverted_index(dict_of_token_frequency, driver.file_count)
+        final_dict = index_builder.build_inverted_index(dict_of_token_frequency, file_limit)
+        print(type(final_dict))
+
+        final_dict = {k: unicode(v).encode("utf-8") for k,v in final_dict.iteritems()}
+        record1 = my_database.inverted_index_table.insert_one(final_dict)
+
+        cursor = my_collection.find()
+        '''
+        for record in cursor:
+                print(record)
+                print("\n")
+        '''
