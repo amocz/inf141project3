@@ -7,7 +7,7 @@ class query:
 
     def __init__(self):
         self.input = ""
-        
+        self.trimmed_list = []
 
     def get_query(self):
         self.input = raw_input("Search here: ")    
@@ -15,8 +15,8 @@ class query:
 
     def trim_query(self):
         user_input = self.get_query().lower().split()
-        trimmed = [i for i in user_input if i not in STOPWORDS]
-        return trimmed
+        self.trimmed_list = [i for i in user_input if i not in STOPWORDS]
+        return self.trimmed_list
    
 ##if __name__ == "__main__":
 ##    q = query()
