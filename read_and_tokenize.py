@@ -4,6 +4,7 @@
 import json
 import lxml
 import build_index
+import get_input
 from bs4 import BeautifulSoup
 from collections import defaultdict, Iterable
 from nltk.tokenize import RegexpTokenizer
@@ -122,11 +123,6 @@ if __name__ == "__main__":
                     dict_of_token_frequency[word].update({url:dict_of_dicts[url][word]})
         #print(dict_of_token_frequency)
 
-        '''
-        The following code can be used to add a record to the pymongo table
-        '''
-
-
         index_builder = build_index.IndexBuilder()
         final_dict = index_builder.build_inverted_index(dict_of_token_frequency, file_limit)
         print(type(final_dict))
@@ -140,3 +136,5 @@ if __name__ == "__main__":
                 print(record)
                 print("\n")
         '''
+        query = get_input.get_query()
+        print(str(query))
