@@ -5,6 +5,7 @@ import json
 import lxml
 import build_index
 import get_input
+import search_index
 from bs4 import BeautifulSoup
 from collections import defaultdict, Iterable
 from nltk.tokenize import RegexpTokenizer
@@ -124,19 +125,21 @@ if __name__ == "__main__":
 
         index_builder = build_index.IndexBuilder()
         final_dict = index_builder.build_inverted_index(dict_of_token_frequency, file_limit)
-        print(type(final_dict))
 
         final_dict = {k: unicode(v).encode("utf-8") for k,v in final_dict.iteritems()}
         record1 = my_database.inverted_index_table.insert_one(final_dict)
 
-        cursor = my_collection.find()
+        #cursor = my_collection.find()
         '''
         for record in cursor:
                 print(record)
                 print("\n")
         '''
 
-        query = get_input.query()
-        a = query.trim_query()
-        print(a)
-        
+        query_obj = get_input.query()
+        query_token = query_obj.get_query()
+
+        trimmed_query = query_obj.trim_query(query_token)
+        search_token = query_obj.search_query(query_token)
+
+        result_list = search_index.search(trimmed_query, my_collection)
