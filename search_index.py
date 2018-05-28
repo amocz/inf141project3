@@ -16,8 +16,9 @@ def search(search_query, database):
     ranked_list = []
     valid_records = _find_valid_documents(search_query, database)
 
-    #for term in search_query:
-    #    for record in valid_records:
+    #for record in valid_records:
+        #for term in search_query:
+
 
 
 
@@ -26,14 +27,13 @@ Basically now we need to sum the tf-idf scores for each term in the search query
 according to https://piazza.com/class/jfk8ckl0nbujw?cid=517 "The "default" method would just be summing tf-idf scores 
 for each term in the search query for each document."
 
- 
-I don't fully understand how to do this but these are my thoughts so far: 
+ These are my thoughts so far: 
 
 steps: 
-look at each term in the search query
-find the documents which contain most of the terms
-sum the tf-idf scores for each term contained in the document
-rank the documents by the total tf-idf and then create the return set
+1) find the documents which contain most of the terms
+2) look at each term in the search query
+3) sum the tf-idf scores for each term contained in the document
+4) rank the documents by the total tf-idf and then create the return set
 
 search query: people get info
 
@@ -44,5 +44,14 @@ results:
 (u'people', u"{'4/214': 1.6666666666666667, '13/481': 5.0, '13/480': 1.6666666666666667}")
 (u'bioinformatics', u"{'13/480': 10.0}")
 
+doc 13/481 - get(10.0), forget(5.0), people(5.0) - Sum(20)
+doc 13/480 - get(2.5), people(1.667), bioinformatics(10) - Sum(14.17)
+doc  4/214 - information(5.0), people(1.667) - Sum(6.667)
 
+{"13/481" : 20, "13/480" : 14.17, "4/214" : 6.667} - sorted
+
+Search for "people get info" returned 3 results: 
+link for 13/481 from bookkeeping.json
+link for 13/480 from bookkeeping.json
+link for 4/214 from bookkeeping.json
 '''
