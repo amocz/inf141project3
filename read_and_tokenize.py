@@ -94,9 +94,9 @@ if __name__ == "__main__":
         '''
         The following code can be used to delete all records from a pymongo table in order to restart
         and avoid duplicate entries
-        
-        my_collection.delete_many({}) or my_collection.remove({})         
         '''
+        my_collection.delete_many({}) or my_collection.remove({})         
+        
 
         '''
         The following code can be used to check all records in a pymongo table

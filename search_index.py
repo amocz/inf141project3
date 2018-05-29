@@ -14,14 +14,28 @@ def _find_valid_documents(search_query, database):
 
 def search(search_query, database):
     ranked_list = []
+    docID_dict = {}
+    temp_dict = {}
     valid_records = _find_valid_documents(search_query, database)
-
-    #for record in valid_records:
-        #for term in search_query:
-
-
-
-
+    print(type(valid_records))
+    for key, record in valid_records:
+        #for key in record:
+        #    print(key)
+        print(record)
+        record = record.encode("UTF-8")
+        record = literal_eval(record)
+        #for docID, tfidf in record:
+        #    print(docID)
+        print(record)
+        for x, y in record.items():
+            print(type(y))
+            if x not in docID_dict:
+                temp_dict = dict([(key, y)])
+                docID_dict[x] = temp_dict
+            else:
+                temp_dict = dict([(key, y)])
+                docID_dict[x].update(temp_dict)
+    print(docID_dict)
 '''
 Basically now we need to sum the tf-idf scores for each term in the search query for each document
 according to https://piazza.com/class/jfk8ckl0nbujw?cid=517 "The "default" method would just be summing tf-idf scores 
