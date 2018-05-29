@@ -11,7 +11,7 @@ from collections import defaultdict, Iterable
 from nltk.tokenize import RegexpTokenizer
 from pymongo import MongoClient
 
-file_limit = 5
+#file_limit = 15
 
 class Milestone_1:
 
@@ -19,6 +19,7 @@ class Milestone_1:
                 self.file_count = 0
                 self.list_of_keys = []
                 self.tokenized_files = {}
+                self.url_dict = {}
 
         def read_bookkeeping(self):
                 '''reads the bookkeeping.txt and loads it into a dict'''
@@ -28,6 +29,7 @@ class Milestone_1:
                 for j in json_dict:
                         self.file_count = self.file_count + 1
                         self.list_of_keys.append(j.encode("utf-8"))
+                self.url_dict = json_dict
 
         def tokenizer(self, file_path):
                 '''Tokenizes input HTML files and returns a word_dict dictionary
@@ -65,7 +67,7 @@ class Milestone_1:
                 for path in self.list_of_keys[:15] will allow me to reduce index size of testing
                 '''
                 count = 0
-                for path in self.list_of_keys[:file_limit]:
+                for path in self.list_of_keys:
                         if path == "39/373" or path =="35/269":
                                 continue
                         self.tokenized_files[path] = self.tokenizer(path)
@@ -124,7 +126,7 @@ if __name__ == "__main__":
         #print(dict_of_token_frequency)
 
         index_builder = build_index.IndexBuilder()
-        final_dict = index_builder.build_inverted_index(dict_of_token_frequency, file_limit)
+        final_dict = index_builder.build_inverted_index(dict_of_token_frequency, driver.file_count)
 
         final_dict = {k: unicode(v).encode("utf-8") for k,v in final_dict.iteritems()}
         record1 = my_database.inverted_index_table.insert_one(final_dict)
@@ -135,11 +137,13 @@ if __name__ == "__main__":
                 print(record)
                 print("\n")
         '''
-
+        url_dict = driver.url_dict
         query_obj = get_input.query()
         query_token = query_obj.get_query()
 
         trimmed_query = query_obj.trim_query(query_token)
         search_token = query_obj.search_query(query_token)
-
-        result_list = search_index.search(trimmed_query, my_collection)
+        result_list = search_index.search(trimmed_query, my_collection, url_dict)
+        for link in result_list:
+                print(link + "\n")
+        
